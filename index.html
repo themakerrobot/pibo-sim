@@ -248,6 +248,11 @@ const PIBO_MAP = [
 ];
 const PIBO_DEFAULT_INIT = [0,0,-70,-25,0,0,0,0,70,25]; // 저장 못 했을때 기본 init
 
+// ── data/ 자동 로드 설정 ──
+const AUTOLOAD   = true;          // 페이지 열면 data/에서 자동 로드
+const DATA_DIR   = 'data/';
+const URDF_NAMES = ['pibo.urdf'];
+
 // ═══════════════════════════════════════════════════════════
 // ORBIT CONTROLS
 // ═══════════════════════════════════════════════════════════
@@ -417,6 +422,31 @@ document.getElementById('urdfIn').addEventListener('change',e=>{urdfFile=e.targe
 document.getElementById('stlIn').addEventListener('change',e=>{stlFiles=Array.from(e.target.files);if(stlFiles.length){document.getElementById('stlLbl').textContent='✅ '+stlFiles.length+'개 STL files';document.getElementById('stlLbl').className='upload-zone done';}chk();});
 function chk(){document.getElementById('loadBtn').disabled=!(urdfFile&&stlFiles.length);}
 document.getElementById('loadBtn').addEventListener('click',loadRobot);
+
+// data/ 에서 URDF+STL 직접 fetch (업로드 없이)
+async function autoLoadFromData(){
+  let urdfTxt=null, urdfName=null;
+  for(const nm of URDF_NAMES){
+    try{ const r=await fetch(DATA_DIR+nm); if(r.ok){ urdfTxt=await r.text(); urdfName=nm; break; } }catch(e){}
+  }
+  if(!urdfTxt){ console.warn('autoload: URDF를 data/에서 못 찾음'); return; }
+  let links;
+  try{ links=parseURDF(urdfTxt).links; }catch(e){ console.warn('autoload parse fail',e); return; }
+  const names=new Set();
+  for(const l of Object.values(links)) for(const v of l.visuals){ const b=basename(v.fn); if(b) names.add(b); }
+  const files=[];
+  for(const n of names){
+    try{ const r=await fetch(DATA_DIR+n); if(r.ok) files.push(new File([await r.blob()], n)); }catch(e){}
+  }
+  if(!files.length){ console.warn('autoload: STL을 data/에서 못 받음'); return; }
+  urdfFile=new File([urdfTxt], urdfName);
+  stlFiles=files;
+  document.getElementById('urdfLbl').textContent='✅ '+urdfName+' (data/)';
+  document.getElementById('urdfLbl').className='upload-zone done';
+  document.getElementById('stlLbl').textContent='✅ '+files.length+'개 STL (data/)';
+  document.getElementById('stlLbl').className='upload-zone done';
+  await loadRobot();
+}
 
 // LOAD ROBOT
 async function loadRobot(){
@@ -812,6 +842,9 @@ cv.addEventListener('click',e=>{
 function readText(f){return new Promise((r,j)=>{const fr=new FileReader();fr.onload=e=>r(e.target.result);fr.onerror=j;fr.readAsText(f);});}
 function readBuf(f){return new Promise((r,j)=>{const fr=new FileReader();fr.onload=e=>r(e.target.result);fr.onerror=j;fr.readAsArrayBuffer(f);});}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+// 페이지 열리면 data/에서 자동 로드 (실패시 업로드 UI로 폴백)
+if(AUTOLOAD) window.addEventListener('load',autoLoadFromData);
 </script>
 </body>
 </html>
