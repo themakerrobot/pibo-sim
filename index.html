@@ -144,9 +144,9 @@ const clock={last:performance.now(),fps:0,t:performance.now()};
 
 let RAPIER=null;
 const CDNS=[
-  'https://esm.sh/@dimforge/rapier3d-compat@0.12.2',
-  'https://cdn.jsdelivr.net/npm/@dimforge/rapier3d-compat@0.12.2/+esm',
-  'https://unpkg.com/@dimforge/rapier3d-compat@0.12.2/rapier.es.js'
+  'https://cdn.jsdelivr.net/npm/@dimforge/rapier3d-compat@0.19.3/rapier.mjs',
+  'https://esm.sh/@dimforge/rapier3d-compat@0.19.3',
+  'https://unpkg.com/@dimforge/rapier3d-compat@0.19.3/rapier.mjs'
 ];
 const ovEl=document.getElementById('ov');
 for(const url of CDNS){
@@ -189,7 +189,7 @@ function buildRobot(){
     for(const jj of Object.values(joints))if(jj.parent===name)fk(jj.child,m);}
   fk(rootName,new THREE.Matrix4());
 
-  const bodies={}, linkObjs={};
+  const bodies={}, linkObjs={}; let totalMass=0;
   // 바닥에 닿게 살짝 띄움: 최저 z 계산
   let minZ=Infinity;
   for(const[ln,m] of Object.entries(worldMat)){const lk=links[ln];for(const v of lk.vis){const pts=stlMap[base(v.fn)];if(!pts)continue;
@@ -218,6 +218,7 @@ function buildRobot(){
       const mesh=new THREE.Mesh(g,new THREE.MeshPhongMaterial({color:col,shininess:25}));
       mesh.position.set(...v.o.xyz);mesh.setRotationFromEuler(new THREE.Euler(...v.o.rpy,'XYZ'));mesh.scale.set(...v.sc);
       grp.add(mesh);}
+    try{totalMass+=body.mass();}catch(e){}
     cont.add(grp);linkObjs[ln]={grp,body};
   }
   // 관절 + 모터
@@ -246,7 +247,7 @@ function buildRobot(){
   for(const j of Object.values(joints))if(j.type!=='fixed')target[j.name]=0;
   applyTargets();
   document.getElementById('badge').textContent='로드 완료';document.getElementById('badge').className='badge ok';
-  document.getElementById('info').textContent=`링크 ${Object.keys(linkObjs).length} · 관절 ${Object.keys(jmap).length} · 질량≈${world.bodies.getAll().reduce((a,b)=>a+(b.mass?b.mass():0),0).toFixed(2)}kg`;
+  document.getElementById('info').textContent=`링크 ${Object.keys(linkObjs).length} · 관절 ${Object.keys(jmap).length} · 질량≈${totalMass.toFixed(2)}kg`;
   buildSliders(joints);
 }
 
