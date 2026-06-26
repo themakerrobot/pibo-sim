@@ -870,7 +870,7 @@ function setupLCD(){
   // X-Z 평면 투영 UV → LCD 실제 표면에 매핑
   const pos=geo.attributes.position; const uv=new Float32Array(pos.count*2);
   for(let i=0;i<pos.count;i++){
-    uv[i*2]   = 1-(pos.getX(i)-minX)/rx;   // u (좌우 뒤집히면 1- 빼기)
+    uv[i*2]   = (pos.getX(i)-minX)/rx;       // u
     uv[i*2+1] = (pos.getZ(i)-minZ)/rz;     // v (상하)
   }
   geo.setAttribute('uv', new THREE.BufferAttribute(uv,2));
