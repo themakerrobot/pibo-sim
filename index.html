@@ -115,39 +115,39 @@ input[type=range]:hover::-webkit-slider-thumb,input[type=range]:focus::-webkit-s
 </head>
 <body>
 <header>
-  <h1>URDF Workbench</h1>
-  <span class="badge" id="statusBadge">파일 업로드 필요 (Upload Files)</span>
+  <h1>PIBO Sim</h1>
+  <span class="badge" id="statusBadge">준비</span>
 </header>
 
 <div class="main">
   <div class="left">
     <div class="sec">
-      <div class="sec-title">뷰 (View)</div>
-      <button class="tb on" id="gridBtn"><span class="ic">&#x22DE;</span>그리드 (Grid)</button>
-      <button class="tb" id="wireBtn"><span class="ic">&#x25A6;</span>와이어프레임 (Wireframe)</button>
-      <button class="tb" id="axisBtn"><span class="ic">&#x2197;</span>관절 좌표축 (Joint Axes)</button>
-      <button class="tb" id="ssBtn"><span class="ic">&#x1F4F7;</span>스크린샷 (Screenshot)</button>
+      <div class="sec-title">뷰</div>
+      <button class="tb on" id="gridBtn"><span class="ic">&#x22DE;</span>그리드</button>
+      <button class="tb" id="wireBtn"><span class="ic">&#x25A6;</span>와이어</button>
+      <button class="tb" id="axisBtn"><span class="ic">&#x2197;</span>관절축</button>
+      <button class="tb" id="ssBtn"><span class="ic">&#x1F4F7;</span>스크린샷</button>
     </div>
     <div class="sec">
-      <div class="sec-title">포즈 (Pose)</div>
-      <button class="tb" id="resetBtn"><span class="ic">&#x21BA;</span>리셋 (Reset)</button>
+      <div class="sec-title">포즈</div>
+      <button class="tb" id="resetBtn"><span class="ic">&#x21BA;</span>리셋</button>
       <div class="pose-row">
-        <button class="pose-btn" id="savePoseBtn">&#x1F4BE; 포즈 저장 (Save Pose)</button>
-        <button class="pose-btn" id="loadPoseBtn">&#x1F4C2; 불러오기 (Load)</button>
+        <button class="pose-btn" id="savePoseBtn">&#x1F4BE; 저장</button>
+        <button class="pose-btn" id="loadPoseBtn">&#x1F4C2; 불러오기</button>
       </div>
       <input type="file" id="poseFileIn" accept=".json">
     </div>
     <div class="sec">
-      <div class="sec-title">LCD 텍스트 (Screen)</div>
+      <div class="sec-title">LCD</div>
       <input type="text" id="lcdText" placeholder="Hi, pibo" style="width:100%;padding:6px 8px;background:var(--panel2);border:1px solid var(--line-soft);border-radius:2px;font-size:11px;color:var(--ink);outline:none;font-family:var(--mono);margin-bottom:5px">
       <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--ink3)"><span>글씨색</span><input type="color" id="lcdColor" value="#ffffff" style="flex:1;height:26px;border:1px solid var(--line-soft);border-radius:2px;background:var(--panel2);cursor:pointer;padding:2px"></div>
     </div>
     <div class="sec">
-      <div class="sec-title">안경 색상 (Glasses)</div>
+      <div class="sec-title">안경</div>
       <input type="color" id="glassColor" value="#00e1ff" style="width:100%;height:30px;border:1px solid var(--line-soft);border-radius:2px;background:var(--panel2);cursor:pointer;padding:2px">
     </div>
     <div class="sec" id="infoSec" style="display:none">
-      <div class="sec-title">모델 정보 (Info)</div>
+      <div class="sec-title">정보</div>
       <div id="infoRows"></div>
     </div>
   </div>
@@ -156,59 +156,58 @@ input[type=range]:hover::-webkit-slider-thumb,input[type=range]:focus::-webkit-s
     <canvas id="cv"></canvas>
     <div class="empty-msg" id="emptyMsg">
       <div class="em-icon">&#x1F916;</div>
-      <p class="em-msg">URDF + STL 파일을 업로드하고 (Upload files)<br>로드 버튼을 누르세요 (then press Load)<br><br>
-      <span style="font-size:10px;color:#B0B7BE">STL은 meshes/ 폴더 전체 다중선택 (Select all STL files in meshes/)</span></p>
+      <p class="em-msg">data/ 에서 모델을 불러옵니다<br><span style="font-size:10px;color:#B0B7BE">실패 시 새로고침</span></p>
     </div>
     <div class="load-overlay" id="loadOv" style="display:none">
       <div class="spinner" id="spinner"></div>
-      <div class="load-title" id="loadTitle">모델 로딩 중... (Loading model...)</div>
+      <div class="load-title" id="loadTitle">로딩 중...</div>
       <div class="pbar-bg"><div class="pbar-fill" id="pbar"></div></div>
-      <div class="pbar-text" id="ptext">준비 중... (Preparing...)</div>
+      <div class="pbar-text" id="ptext">준비 중...</div>
     </div>
     <div class="hud">
       <span id="fpsEl">FPS: --</span>
-      <span style="color:#B0B7BE">좌클릭 (Rotate) &nbsp; 우클릭 (Pan) &nbsp; 휠 (Zoom)</span>
+      <span style="color:#B0B7BE">좌:회전 &nbsp; 우:이동 &nbsp; 휠:줌</span>
     </div>
     <div class="tooltip" id="tt"></div>
   </div>
 
   <div class="right">
     <div class="right-head">
-      <b>관절 제어 (Joint Control)</b>
-      <input class="search-box" id="searchBox" placeholder="검색... (Search)" type="text">
+      <b>관절</b>
+      <input class="search-box" id="searchBox" placeholder="검색" type="text">
       <span class="jcount" id="jcount">-</span>
     </div>
     <div class="joints" id="jointsEl">
-      <div class="no-joint">URDF 로드 후 (Load URDF first)<br>관절 슬라이더가 표시됩니다 (joint sliders appear)</div>
+      <div class="no-joint">URDF 로드 후 관절 표시</div>
     </div>
   </div>
 </div>
 
 <div class="timeline-panel">
   <div class="tl-controls">
-    <button class="tl-btn" id="tlToStart" title="처음으로 (Go to Start)">&#x23EE;</button>
-    <button class="tl-btn" id="tlPlayPause" title="재생/정지 (Play/Pause)">&#x25B6;</button>
-    <button class="tl-btn" id="tlStop" title="정지 (Stop)">&#x25A0;</button>
+    <button class="tl-btn" id="tlToStart" title="처음">&#x23EE;</button>
+    <button class="tl-btn" id="tlPlayPause" title="재생/정지">&#x25B6;</button>
+    <button class="tl-btn" id="tlStop" title="정지">&#x25A0;</button>
     <span class="tl-time-display" id="tlTimeDisp">0.00s</span>
     <div class="tl-sep"></div>
-    <button class="tl-btn accent" id="tlAddKf">+ 키프레임 추가 (Add Keyframe)</button>
-    <button class="tl-btn danger" id="tlDelKf">&#x2715; 삭제 (Delete)</button>
+    <button class="tl-btn accent" id="tlAddKf">+ 키프레임</button>
+    <button class="tl-btn danger" id="tlDelKf">&#x2715; 삭제</button>
     <div class="tl-sep"></div>
-    <span class="tl-label">총 길이 (Duration)</span>
+    <span class="tl-label">길이</span>
     <input class="tl-dur" id="tlDurInput" type="number" value="5" min="1" max="60" step="0.5">
-    <span class="tl-label">s &nbsp; 속도 (Speed)</span>
+    <span class="tl-label">s · 속도</span>
     <select class="tl-select" id="tlSpeedSel">
       <option value="0.25">0.25×</option>
       <option value="0.5">0.5×</option>
       <option value="1" selected>1×</option>
       <option value="2">2×</option>
     </select>
-    <button class="tl-btn" id="tlLoopBtn">&#x1F501; 루프 (Loop)</button>
+    <button class="tl-btn" id="tlLoopBtn">&#x1F501; 루프</button>
     <div class="tl-sep"></div>
-    <button class="tl-btn" id="tlSaveMotion">&#x1F4BE; 모션 저장 (Save Motion)</button>
-    <button class="tl-btn" id="tlLoadMotion">&#x1F4C2; 불러오기 (Load)</button>
+    <button class="tl-btn" id="tlSaveMotion">&#x1F4BE; 저장</button>
+    <button class="tl-btn" id="tlLoadMotion">&#x1F4C2; 불러오기</button>
     <input type="file" id="motionFileIn" accept=".json">
-    <span class="tl-kf-count" id="tlKfCount">키프레임 0개 (0 Keyframes)</span>
+    <span class="tl-kf-count" id="tlKfCount">키프레임 0</span>
   </div>
   <div class="tl-body">
     <div class="tl-canvas-wrap" id="tlWrap">
@@ -540,9 +539,9 @@ async function loadRobot(){
     const mv=Object.values(joints).filter(j=>j.type!=='fixed').length;
     document.getElementById('infoSec').style.display='block';
     document.getElementById('infoRows').innerHTML=
-      [['링크 (Links)',Object.keys(links).length],['관절 (Joints)',Object.keys(joints).length],['가동 관절 (Movable)',mv],['메시 (Meshes)',allMeshes.length]]
+      [['링크',Object.keys(links).length],['관절',Object.keys(joints).length],['가동',mv],['메시',allMeshes.length]]
       .map(([k,v])=>`<div class="info-row"><span>${k}</span><span class="info-val">${v}</span></div>`).join('');
-    const b=document.getElementById('statusBadge');b.textContent='로드 완료 (Done)';b.className='badge ok';
+    const b=document.getElementById('statusBadge');b.textContent='완료';b.className='badge ok';
   }catch(e){console.error(e);alert('오류 (Error): '+e.message);}
   document.getElementById('loadOv').style.display='none';
   if(_lb)_lb.disabled=false;
@@ -551,21 +550,21 @@ async function loadRobot(){
 // JOINT SLIDERS
 function buildSliders(joints){
   const movable=Object.values(joints).filter(j=>j.type!=='fixed');
-  document.getElementById('jcount').textContent=movable.length+' 관절 (joints)';
-  const groups={'머리 (Head)':[],'오른팔 (R.Arm)':[],'왼팔 (L.Arm)':[],'오른다리 (R.Leg)':[],'왼다리 (L.Leg)':[],'기타 (Other)':[]};
+  document.getElementById('jcount').textContent=movable.length+'개';
+  const groups={'머리':[],'오른팔':[],'왼팔':[],'오른다리':[],'왼다리':[],'기타':[]};
   for(const j of movable){const lab=(MOTOR_LABEL[j.name]||'');
-    if(lab.includes('Head'))groups['머리 (Head)'].push(j);
-    else if(lab.includes('Right Arm')||lab.includes('Right Hand'))groups['오른팔 (R.Arm)'].push(j);
-    else if(lab.includes('Left Arm')||lab.includes('Left Hand'))groups['왼팔 (L.Arm)'].push(j);
-    else if(lab.includes('Right Leg')||lab.includes('Right Foot'))groups['오른다리 (R.Leg)'].push(j);
-    else if(lab.includes('Left Leg')||lab.includes('Left Foot'))groups['왼다리 (L.Leg)'].push(j);
-    else groups['기타 (Other)'].push(j);
+    if(lab.includes('Head'))groups['머리'].push(j);
+    else if(lab.includes('Right Arm')||lab.includes('Right Hand'))groups['오른팔'].push(j);
+    else if(lab.includes('Left Arm')||lab.includes('Left Hand'))groups['왼팔'].push(j);
+    else if(lab.includes('Right Leg')||lab.includes('Right Foot'))groups['오른다리'].push(j);
+    else if(lab.includes('Left Leg')||lab.includes('Left Foot'))groups['왼다리'].push(j);
+    else groups['기타'].push(j);
   }
   // 그룹 내부 순서: Tilt→Pan, 어깨→팔꿈치, 엉덩이→발목
   const within=n=>{n=n.toLowerCase();return n.includes('tilt')?0:n.includes('pan')?1:n.includes('shoulder')?0:n.includes('elbow')?1:n.includes('hip')?0:(n.includes('ankle')||n.includes('foot'))?1:2;};
   for(const k in groups)groups[k].sort((a,b)=>within(a.name)-within(b.name));
   const el=document.getElementById('jointsEl');
-  if(!movable.length){el.innerHTML='<div class="no-joint">가동 관절 없음 (No movable joints)</div>';return;}
+  if(!movable.length){el.innerHTML='<div class="no-joint">가동 관절 없음</div>';return;}
   let html='';
   for(const[gname,jlist]of Object.entries(groups)){
     if(!jlist.length)continue;const gid=sid(gname);
@@ -675,7 +674,7 @@ function deleteSelectedKf(){
   selectedKfId=null;updateKfCount();
 }
 function updateKfCount(){
-  document.getElementById('tlKfCount').textContent=`키프레임 ${keyframes.length}개 (Keyframes)`;
+  document.getElementById('tlKfCount').textContent=`키프레임 ${keyframes.length}`;
 }
 
 // TIMELINE CANVAS
