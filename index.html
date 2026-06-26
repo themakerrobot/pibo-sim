@@ -755,12 +755,13 @@ document.getElementById('tlSaveMotion').addEventListener('click',()=>{
   if(!keyframes.length){alert('키프레임을 먼저 추가하세요 (Add a keyframe first)');return;}
   const R2D=180/Math.PI;
   const sorted=[...keyframes].sort((a,b)=>a.time-b.time);
-  const pos=sorted.map(kf=>({
-    d: PIBO_MAP.map(m=>Math.round(m.s*(kf.joints[m.j]??0))), // 슬라이더(度)=모터값
-    seq: Math.round(kf.time*1000)
-  }));
+  const toD=kf=>PIBO_MAP.map(m=>Math.round(m.s*(kf.joints[m.j]??0))); // 슬라이더(度)=모터값
+  const hasZero = sorted.length && sorted[0].time<0.01;
+  const init = sorted.length ? toD(sorted[0]) : PIBO_DEFAULT_INIT.slice();
+  const posFrames = hasZero ? sorted.slice(1) : sorted;  // 0초 키프레임은 init으로만, pos에서 제외
+  const pos = posFrames.map(kf=>({ d:toD(kf), seq:Math.round(kf.time*1000) }));
   const name=(prompt('모션 이름 (Motion name)','motion')||'motion').trim()||'motion';
-  const data={[name]:{init_def:1, init:(pos[0]?pos[0].d.slice():PIBO_DEFAULT_INIT), pos}};
+  const data={[name]:{init_def:1, init, pos}};
   const a=document.createElement('a');a.download=name+'.json';
   a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));a.click();
 });
@@ -781,13 +782,16 @@ document.getElementById('motionFileIn').addEventListener('change',async e=>{
   }
   if(frames){
     const last=PIBO_MAP.map((m,i)=> initArr?initArr[i]:0);
-    keyframes=frames.map((fr,idx)=>{
+    const kfs=[];
+    if(initArr){ const j={}; PIBO_MAP.forEach((m,i)=>{ j[m.j]=m.s*(initArr[i]||0); }); kfs.push({id:0,time:0,joints:j}); }
+    frames.forEach((fr)=>{
       const d=(fr.d||[]).map((v,i)=> v===999 ? last[i] : v);
       d.forEach((v,i)=>last[i]=v);
       const joints={};
       PIBO_MAP.forEach((m,i)=>{ joints[m.j]=m.s*(d[i]||0); }); // 모터(度)=슬라이더값
-      return {id:idx, time:(fr.seq||0)/1000, joints};
+      kfs.push({id:kfs.length, time:(fr.seq||0)/1000, joints});
     });
+    keyframes=kfs;
     duration=Math.max(5,...keyframes.map(k=>k.time));
     kfIdCounter=keyframes.length;
     document.getElementById('tlDurInput').value=duration;
