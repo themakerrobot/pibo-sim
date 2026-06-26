@@ -144,7 +144,7 @@ input[type=range]:hover::-webkit-slider-thumb,input[type=range]:focus::-webkit-s
     </div>
     <div class="sec">
       <div class="sec-title">안경 색상 (Glasses)</div>
-      <input type="color" id="glassColor" value="#8c8c91" style="width:100%;height:30px;border:1px solid var(--line-soft);border-radius:2px;background:var(--panel2);cursor:pointer;padding:2px">
+      <input type="color" id="glassColor" value="#00e1ff" style="width:100%;height:30px;border:1px solid var(--line-soft);border-radius:2px;background:var(--panel2);cursor:pointer;padding:2px">
     </div>
     <div class="sec" id="infoSec" style="display:none">
       <div class="sec-title">모델 정보 (Info)</div>
@@ -532,7 +532,7 @@ async function loadRobot(){
       robotRoot.position.y=-box.min.y;
       orbit.focusBox(new THREE.Box3().setFromObject(robotRoot));
       setupLCD();
-      if(glassesMesh)document.getElementById('glassColor').value='#'+glassesMesh.material.color.getHexString();
+      if(glassesMesh){glassesMesh.material.color.set('#00e1ff');document.getElementById('glassColor').value='#00e1ff';}
     }
     buildSliders(joints);
     // ★ 로드 직후 슬라이더 0 적용 → 어깨 오프셋(앞으로 나란히) 반영
