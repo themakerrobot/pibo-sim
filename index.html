@@ -55,6 +55,8 @@ canvas#cv{display:block;width:100%!important;height:100%!important}
 .em-icon{font-size:38px;opacity:.2;filter:grayscale(1)}
 .em-msg{font-size:12px;color:var(--ink3);line-height:1.8;text-align:center}
 .load-overlay{position:absolute;inset:0;background:#E9EBEDee;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.spinner{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 .load-title{font-size:14px;color:var(--ink);font-weight:600;letter-spacing:.05em}
 .pbar-bg{width:280px;height:3px;background:var(--line)}
 .pbar-fill{height:100%;background:var(--acc);transition:width .07s;width:0%}
@@ -157,7 +159,8 @@ input[type=range]:hover::-webkit-slider-thumb,input[type=range]:focus::-webkit-s
       <span style="font-size:10px;color:#B0B7BE">STL은 meshes/ 폴더 전체 다중선택 (Select all STL files in meshes/)</span></p>
     </div>
     <div class="load-overlay" id="loadOv" style="display:none">
-      <div class="load-title">모델 로딩 중... (Loading model...)</div>
+      <div class="spinner" id="spinner"></div>
+      <div class="load-title" id="loadTitle">모델 로딩 중... (Loading model...)</div>
       <div class="pbar-bg"><div class="pbar-fill" id="pbar"></div></div>
       <div class="pbar-text" id="ptext">준비 중... (Preparing...)</div>
     </div>
@@ -425,27 +428,45 @@ document.getElementById('loadBtn').addEventListener('click',loadRobot);
 
 // data/ 에서 URDF+STL 직접 fetch (업로드 없이)
 async function autoLoadFromData(){
+  const ov=document.getElementById('loadOv'), title=document.getElementById('loadTitle');
+  const ptext=document.getElementById('ptext'), pbar=document.getElementById('pbar'), spin=document.getElementById('spinner');
+  const fail=(msg)=>{ spin.style.display='none'; title.textContent='자동 로드 실패 (Auto-load failed)';
+    ptext.innerHTML=msg+'<br><span style="color:#B0B7BE">왼쪽에서 직접 업로드하거나 새로고침하세요</span>';
+    setTimeout(()=>{ ov.style.display='none'; document.getElementById('emptyMsg').style.display='flex'; }, 4000); };
+  // 오버레이 켜기
+  document.getElementById('emptyMsg').style.display='none';
+  ov.style.display='flex'; spin.style.display='block';
+  title.textContent='data/ 에서 불러오는 중... (Loading from data/)';
+  ptext.textContent='URDF 가져오는 중...'; pbar.style.width='0%';
+
   let urdfTxt=null, urdfName=null;
   for(const nm of URDF_NAMES){
     try{ const r=await fetch(DATA_DIR+nm); if(r.ok){ urdfTxt=await r.text(); urdfName=nm; break; } }catch(e){}
   }
-  if(!urdfTxt){ console.warn('autoload: URDF를 data/에서 못 찾음'); return; }
+  if(!urdfTxt){ fail('data/ 에서 URDF('+URDF_NAMES.join(', ')+')를 찾지 못했습니다.'); return; }
+
   let links;
-  try{ links=parseURDF(urdfTxt).links; }catch(e){ console.warn('autoload parse fail',e); return; }
+  try{ links=parseURDF(urdfTxt).links; }catch(e){ fail('URDF 파싱 오류: '+e.message); return; }
+
   const names=new Set();
   for(const l of Object.values(links)) for(const v of l.visuals){ const b=basename(v.fn); if(b) names.add(b); }
-  const files=[];
-  for(const n of names){
+  const arr=[...names]; const files=[]; let i=0;
+  for(const n of arr){
+    ptext.textContent=`STL 받는 중 ${++i}/${arr.length} — ${n}`;
+    pbar.style.width=`${(i/arr.length)*100}%`;
     try{ const r=await fetch(DATA_DIR+n); if(r.ok) files.push(new File([await r.blob()], n)); }catch(e){}
+    await sleep(0);
   }
-  if(!files.length){ console.warn('autoload: STL을 data/에서 못 받음'); return; }
+  if(!files.length){ fail('data/ 에서 STL을 받지 못했습니다.'); return; }
+
   urdfFile=new File([urdfTxt], urdfName);
   stlFiles=files;
   document.getElementById('urdfLbl').textContent='✅ '+urdfName+' (data/)';
   document.getElementById('urdfLbl').className='upload-zone done';
   document.getElementById('stlLbl').textContent='✅ '+files.length+'개 STL (data/)';
   document.getElementById('stlLbl').className='upload-zone done';
-  await loadRobot();
+  ptext.textContent='모델 구성 중...';
+  await loadRobot();   // loadRobot이 오버레이를 닫음
 }
 
 // LOAD ROBOT
