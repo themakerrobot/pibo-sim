@@ -426,6 +426,58 @@ const PIBO_I18N = {
   '(브라우저가 TTS 를 지원하지 않음)': '(this browser has no speech synthesis)',
   '분': 'm ',
   '초': 's',
+
+  // ── 튜토리얼 (tour.js) ──
+  '도움말': 'Help',
+  '그만 볼래요': 'Skip',
+  '다음': 'Next',
+  '다 봤어요': 'Done',
+  '안녕! 여기는 체험툴이에요.\n파이보를 움직이고 모션을 만들어요.':
+    "Hi! This is the Playground.\nMove Pibo and create motions.",
+  '왼쪽에서 배경, LCD, 안경,\n물리 시뮬을 바꿔 봐요.':
+    'On the left, try the backdrop, LCD,\nglasses and physics sim.',
+  '파이보예요!\n좌클릭 회전 · 우클릭 이동 · 휠 줌.':
+    "Here's Pibo!\nLeft-drag rotates · right-drag pans · wheel zooms.",
+  '관절을 하나씩 움직여서\n포즈를 만들어요.':
+    'Move each joint\nto make a pose.',
+  '타임라인이에요. 키프레임을 넣어\n모션을 만들고 재생해요.':
+    'This is the timeline. Add keyframes\nto build and play a motion.',
+  '만든 모션을 저장하면\n실물 로봇에서도 쓸 수 있어요.':
+    'Save your motion and\nuse it on the real robot too.',
+  '여기는 개발툴이에요.\n블록으로 파이보를 코딩해요.':
+    'This is the Block IDE.\nCode Pibo with blocks.',
+  '블록을 끌어다 붙여서\n프로그램을 만들어요.':
+    'Drag and snap blocks\nto build a program.',
+  '실행을 누르면 파이보가\n블록대로 움직여요.':
+    'Press Run and Pibo\nfollows your blocks.',
+  '파이보가 움직이는 모습을\n여기에서 볼 수 있어요.':
+    'Watch Pibo move\nright here.',
+  '만든 블록은 저장하고\n다시 불러올 수 있어요.':
+    'Save your blocks and\nload them again later.',
+  '여기는 분류툴이에요.\nAI에게 사진 구분을 가르쳐요.':
+    'This is the Classifier.\nTeach AI to tell pictures apart.',
+  '네 단계로 진행해요.\n만들기 → 모으기 → 학습 → 사용!':
+    'Four steps:\ncreate → collect → train → use!',
+  '구분하고 싶은 종류를 만들어요.\n예: 사과, 바나나':
+    'Create a class for each thing.\ne.g. apple, banana',
+  '웹캠이나 파이보 뷰로\n사진을 찍어요.':
+    "Take pictures with your webcam\nor Pibo's view.",
+  '클래스를 고른 뒤,\n꾹 눌러서 샘플을 모아요.':
+    'Pick a class, then\npress and hold to collect samples.',
+  '샘플을 다 모으면\n학습 시작을 눌러요.':
+    'Once samples are ready,\npress Train.',
+  '이름을 짓고 저장하면\n개발툴 블록에서도 쓸 수 있어요.':
+    'Name and save it —\nthen use it in Block IDE blocks.',
+  '여기는 게임툴이에요.\n블록으로 나만의 게임을 만들어요.':
+    'This is the Game Maker.\nBuild your own game with blocks.',
+  '게임 규칙을\n블록으로 만들어요.':
+    'Make the game rules\nwith blocks.',
+  '실행을 누르면\n게임이 시작돼요.':
+    'Press Run and\nthe game begins.',
+  '점수와 목숨이\n여기에 나와요.':
+    'Score and lives\nshow up here.',
+  '막막하면 예제를 열어서\n먼저 놀아 봐요!':
+    'Stuck? Open an example\nand play with it first!',
 };
 
 // HTML 실체참조(&#x1F4BE; 등)는 화면에서는 이미 문자로 바뀌어 있다.
