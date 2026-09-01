@@ -9,11 +9,12 @@
   const T = s => (typeof PIBO_T === 'function' ? PIBO_T(s) : s);
   const bar = document.querySelector('header, #devTop, #cfTop, #gTop');
   if (!bar) return;
-  const PAGE = (location.pathname.split('/').pop() || 'index.html');
+  // '/dev' 처럼 확장자 없는 배포 주소와 '/dev.html' 둘 다 인식한다
+  const PAGE = (location.pathname.split('/').pop() || 'index').replace(/\.html$/, '');
 
   // 단계: [강조할 요소 선택자(없으면 가운데), 말풍선 문구(한국어 키)]
   const TOURS = {
-    'index.html': [
+    'index': [
       [null, '안녕! 여기는 체험툴이에요.\n파이보를 움직이고 모션을 만들어요.'],
       ['.left', '왼쪽에서 배경, LCD, 안경,\n물리 시뮬을 바꿔 봐요.'],
       ['#vp', '파이보예요!\n좌클릭 회전 · 우클릭 이동 · 휠 줌.'],
@@ -21,14 +22,14 @@
       ['.tl-controls', '타임라인이에요. 키프레임을 넣어\n모션을 만들고 재생해요.'],
       ['#tlSaveMotion', '만든 모션을 저장하면\n실물 로봇에서도 쓸 수 있어요.'],
     ],
-    'dev.html': [
+    'dev': [
       [null, '여기는 개발툴이에요.\n블록으로 파이보를 코딩해요.'],
       ['#blocklyDiv', '블록을 끌어다 붙여서\n프로그램을 만들어요.'],
       ['#btnRun', '실행을 누르면 파이보가\n블록대로 움직여요.'],
       ['#vp', '파이보가 움직이는 모습을\n여기에서 볼 수 있어요.'],
       ['#btnSave', '만든 블록은 저장하고\n다시 불러올 수 있어요.'],
     ],
-    'classify.html': [
+    'classify': [
       [null, '여기는 분류툴이에요.\nAI에게 사진 구분을 가르쳐요.'],
       ['#steps', '네 단계로 진행해요.\n만들기 → 모으기 → 학습 → 사용!'],
       ['#clsName', '구분하고 싶은 종류를 만들어요.\n예: 사과, 바나나'],
@@ -37,7 +38,7 @@
       ['#trainBtn', '샘플을 다 모으면\n학습 시작을 눌러요.'],
       ['#mdlName', '이름을 짓고 저장하면\n개발툴 블록에서도 쓸 수 있어요.'],
     ],
-    'game.html': [
+    'game': [
       [null, '여기는 게임툴이에요.\n블록으로 나만의 게임을 만들어요.'],
       ['#gBlockly', '게임 규칙을\n블록으로 만들어요.'],
       ['#gBtnRun', '실행을 누르면\n게임이 시작돼요.'],
