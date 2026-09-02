@@ -1,6 +1,6 @@
 # pibo-lab
 
-PIBO 휴머노이드 로봇용 웹 URDF 시뮬레이터. 브라우저에서 URDF와 STL을 불러와 관절을 조작하고, 타임라인으로 모션을 제작해 실물 PIBO 모션 툴 포맷(JSON)으로 내보내기.
+PIBO 휴머노이드 로봇용 웹 URDF 시뮬레이터. 브라우저에서 URDF와 STL을 불러와 관절을 조작하고, 타임라인으로 모션을 제작해 실물 PIBO 모션 툴 포맷(JSON)으로 내보내기
 
 데모:
 
@@ -40,7 +40,7 @@ https://pibo-lab.themaker.workers.dev/
 | M8 | Left Arm (어깨 좌) | ±80 |
 | M9 | Left Hand (팔꿈치 좌) | ±30 |
 
-어깨(M2/M8)는 슬라이더 0 = 앞으로 나란히 기준.
+어깨(M2/M8)는 슬라이더 0 = 앞으로 나란히 기준
 
 ## 모션 포맷
 
@@ -52,8 +52,8 @@ https://pibo-lab.themaker.workers.dev/
 }}
 ```
 
-값은 정수(도), `seq`는 ms, `d`의 `999`는 이전 프레임 값 유지.
+값은 정수(도), `seq`는 ms, `d`의 `999`는 이전 프레임 값 유지
 
 ## 데이터
 
-`data/` 에 PIBO URDF와 STL 메시 포함.
+`data/` 에 PIBO URDF와 STL 메시 포함
